@@ -1,0 +1,94 @@
+.header-wrapper {
+    .menu-icon-wrapper {
+        @media all and (min-width: 600px) {
+            .menu-icon {
+                display: none;
+            }
+        }
+        .menu-icon {
+            max-width: calc(1rem + 2vw);
+            object-fit: contain;
+        }
+    }
+    .logo {
+        flex-grow: 1;
+    }
+    .logout-button {
+        border: 2px solid #aaa;
+        border-radius: 4px;
+        padding: calc(0.25rem + 0.3vw) calc(0.5rem + 1vw) calc(0.25rem + 0.5vw) calc(0.5rem + 1vw);
+        &:hover {
+            border-color: #1dc7ea;
+        }
+    }
+}
+.content-wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+    position: relative;
+    .side-bar {
+        width: 0;
+        height: 0;
+        overflow: hidden;
+        background-color: #fff;
+        .menu-item {
+            // padding: calc(0.25rem + 0.3vw) calc(0.5rem + 1vw) calc(0.25rem + 0.5vw) calc(0.5rem + 1vw);
+            padding: calc(0.5rem + 1vw);
+            margin-bottom: calc(1rem + 2vw);
+            border-radius: calc(0.15rem + 0.3vw);
+        }
+        .menu-item-selected {
+            border: 1px solid #999;
+        }
+        @media all and (min-width: 600px) {
+            width: calc(15rem + 10vw);
+            height: 100%;
+            background-color: transparent;
+            padding: calc(2rem + 4vw) calc(1rem + 2vw);
+            .menu-item {
+                background-color: #fff;
+                -webkit-box-shadow: 0px 5px 10px 9px #ececec;
+                -moz-box-shadow: 0px 5px 10px 9px #ececec;
+                box-shadow: 0px 5px 10px 9px #ececec;
+                display: flex;
+                justify-content: center;
+            }
+        }
+    }
+    .post-login-content {
+        width: 100%;
+        overflow-y: hidden;
+        .welcome-msg {
+            width: 100%;
+            display: flex;
+            flex-flow: column;
+            height: calc(15rem + 15vw);
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            & > p {
+                font-size: calc(1.5rem + 3vw);
+            }
+            & > p:first-child {
+                font-size: calc(2rem + 4vw);
+            }
+        }
+    }
+}
+.open-menu-content-wrapper {
+    @media all and (max-width: 599px) {
+        .side-bar {
+            width: 100%;
+            height: 100%;
+            padding: calc(2rem + 4vw) calc(1rem + 2vw);
+            .menu-item {
+                box-shadow: none;
+            }
+        }
+        .post-login-content {
+            width: 0;
+            height: 0;
+            overflow: hidden;
+        }
+    }
+}

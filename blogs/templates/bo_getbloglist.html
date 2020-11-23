@@ -1,0 +1,50 @@
+{% extends 'bo_post_login.html' %} {% block headtaglinkschild %} {% load compress %} {% load static %}
+<link rel="stylesheet" type="text/x-scss" href="{% static 'css/bo_getbloglist.scss' %}" />
+{% endblock headtaglinkschild %} {% block bodyContent %}
+<div class="container-fluid">
+    <br />
+    <br />
+    <br />
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="jumbotron col-md-8">
+            <h1 class="display-5">Blog list</h1>
+            <hr class="my-4" />
+            {% if Message%}
+            <div class="alert alert-warning" role="alert">
+                {{Message}}
+            </div>
+            <hr class="my-4" />
+            {% endif %} {% for blog in Payload.blog_list %}
+            <ul class="list-unstyled">
+                <li class="media">
+                    {% if blog.blog_image != None %}
+                    <img src="/media/{{blog.blog_image}}" class="mr-3 bo-blog-image" alt="blog image" />
+                    {% endif %}
+                    <div class="media-body">
+                        <h5 class="mt-0 mb-1">{{blog.blog_title}}</h5>
+                        {% if blog.blog_body != None %} {{blog.blog_body|truncatechars:150}} {% endif %}
+                    </div>
+                    <form
+                        class="remove-item"
+                        action="{% url 'bo_remove_blog' %}"
+                        method="post"
+                        enctype="aplication/json"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title="Remove blog entry"
+                    >
+                        {% csrf_token %}
+                        <input type="hidden" name="blog_id" value="{{blog.blog_id}}" />
+                        <input type="image" src="{% static 'icons/cross_black.png' %}" alt="remove blog entry" />
+                    </form>
+                </li>
+            </ul>
+            <hr class="my-4" />
+            {% endfor %}
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+    <br /><br />
+</div>
+{% endblock bodyContent %}

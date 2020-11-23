@@ -1,0 +1,25 @@
+<!-- extend base html file -->
+{% extends 'frontend_base.html' %}
+<!-- extend base html file -->
+
+<!-- head tag title -->
+{% block title %} 404 - Page Not Found {% endblock title %}
+<!-- end of head tag title -->
+
+{% load static %} {% load compress %}
+
+<!-- page specific links -->
+{% block headtaglinks %} {% compress css %}
+<link rel="stylesheet" type="text/x-scss" href="{% static 'css/frontend_404.scss' %}" />
+{% endcompress %} {% endblock headtaglinks %}
+<!-- end of page specific links -->
+
+<!-- page specific body -->
+{% block container %}
+<h1 class="font-size1 ff-worksandmedium">404</h1>
+{% endblock container %}
+<!-- end of page specific body -->
+
+<!-- page specific body links -->
+{% block bodytaglinks %} {% endblock bodytaglinks %}
+<!-- end of page specific body links -->

@@ -1,0 +1,18 @@
+.bo-blog-image {
+    width: calc(2rem + 4vw);
+    max-height: calc(2rem + 4vw);
+    object-fit: cover;
+}
+.remove-item {
+    padding: calc(0.25rem + 0.5vw);
+    width: calc(1rem + 2vw);
+    height: calc(1rem + 2vw);
+    display: flex;
+    border: none;
+    background-color: transparent;
+    input {
+        width: 100%;
+        object-fit: contain;
+        height: 100%;
+    }
+}

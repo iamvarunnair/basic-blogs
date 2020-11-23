@@ -1,0 +1,26 @@
+{% extends 'bo_post_login.html' %} {% block bodyContent %}
+<div class="container-fluid">
+    <br />
+    <br />
+    <br />
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="jumbotron col-md-8">
+            <h1 class="display-5">{% if Status == 'Success' %}Success{% elif Status == 'Failure' %}Failure{% else %}Error{% endif %}</h1>
+            <hr class="my-4" />
+            {% if Message%}
+            <div class="alert {% if Status == 'Success' %}alert-success{% elif Status == 'Failure' %}alert-danger{% else %}alert-warning{% endif %}" role="alert">
+                {{Message}}
+            </div>
+            <hr class="my-4" />
+            {% if Payload != None %}
+            <a href="{% url Payload.redirect_url %}">
+                <button class="btn btn-dark btn-fill btn-round">&nbsp;&nbsp;&nbsp;{{ Payload.redirect_button }}&nbsp;&nbsp;&nbsp;</button>
+            </a>
+            {% endif %} {% endif %}
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+    <br /><br />
+</div>
+{% endblock bodyContent %}

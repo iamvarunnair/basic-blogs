@@ -1,0 +1,96 @@
+{% extends 'bo_base.html' %} {% load static %}
+<!-- page specific links -->
+{% block headtaglinks %} {% load compress %} {% compress css %}
+<link
+    rel="stylesheet"
+    type="text/x-scss"
+    href="{% static 'css/bo_post_login.scss' %}"
+/>
+{% block headtaglinkschild %}{% endblock headtaglinkschild %} {% endcompress %}
+{% endblock headtaglinks %}
+<!-- end of page specific links -->
+{% block container %}
+<div class="header-wrapper">
+    <div class="menu-icon-wrapper">
+        <img
+            class="menu-icon"
+            src="{% static 'icons/menu.png' %}"
+            alt="menu"
+            onclick="toggleMenu()"
+        />
+    </div>
+    <a
+        class="logo"
+        href="{% if request.path == '/BO/list/' %}javascript:void(0){% else %}{% url 'bo_get_blog_list' %}{% endif %}"
+    >
+        <p class="ff-worksansregular">
+            User: {% block username %}{% endblock username %}
+        </p>
+    </a>
+    <div class="logout-button">
+        <a class="" href="{% url 'bo_logout' %}">Log out</a>
+    </div>
+</div>
+<div class="content-wrapper" id="contentWrapper">
+    <div class="side-bar">
+        <div
+            class="menu-item {% if request.path == '/BO/list/' %}menu-item-selected{% endif %}"
+        >
+            <a
+                class="font-size4 ff-worksansregular"
+                href="{% if request.path == '/BO/list/' %}javascript:void(0){% else %}{% url 'bo_get_blog_list' %}{% endif %}"
+                >Blog list</a
+            >
+        </div>
+        <div
+            class="menu-item {% if request.path == '/BO/addBlog/' %}menu-item-selected{% endif %}"
+        >
+            <a
+                class="font-size4 ff-worksansregular"
+                href="{% if request.path == '/BO/addBlog/' %}javascript:void(0){% else %}{% url 'bo_add_blog' %}{% endif %}"
+                >Add blog</a
+            >
+        </div>
+    </div>
+    <div class="post-login-content">
+        <!-- Body content goes here -->
+        {% block bodyContent %}
+        <!-- Used for debugging
+            {% if Message %}
+            {{Message}}
+            {% endif %} -->
+        <div class="welcome-msg">
+            <p>WELCOME</p>
+            <p>ABOARD</p>
+        </div>
+        {% endblock bodyContent %}
+        <!-- End of body content -->
+    </div>
+</div>
+<div class="footer-wrapper header-wrapper">
+    <p class="font-size4 ff-worksansregular">© Whatever</p>
+</div>
+
+{% endblock container %}
+
+<!-- page specific body links -->
+{% block bodytaglinks %}
+<script>
+    let menuToggle = false;
+    function toggleMenu() {
+        let contentWrapperDom = document.getElementById('contentWrapper');
+        if (
+            menuToggle &&
+            contentWrapperDom.classList.contains('open-menu-content-wrapper')
+        ) {
+            contentWrapperDom.classList.remove('open-menu-content-wrapper');
+            menuToggle = !menuToggle;
+        } else {
+            contentWrapperDom.classList.add('open-menu-content-wrapper');
+            menuToggle = !menuToggle;
+        }
+    }
+</script>
+{% block blodytaglinkschild %} {% endblock blodytaglinkschild %} {% endblock
+bodytaglinks %}
+<!-- end of page specific body links -->

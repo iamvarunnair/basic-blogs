@@ -1,0 +1,77 @@
+<!-- extend base html file -->
+{% extends 'frontend_base.html' %}
+<!-- extend base html file -->
+
+<!-- head tag title -->
+{% block title %} Blog Id {% endblock title %}
+<!-- end of head tag title -->
+
+{% load static %} {% load compress %}
+
+<!-- page specific links -->
+{% block headtaglinks %} {% compress css %}
+<link rel="stylesheet" type="text/x-scss" href="{% static 'css/frontend_getblog.scss' %}" />
+{% endcompress %}
+<!-- meta tags -->
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+{% for tag in Payload.meta_tags %} {% if tag.tag_name == 'name' %}
+<meta name="{{ tag.tag_name_value }}" content="{{ tag.tag_content }}" />
+{% elif tag.tag_name == 'property' %}
+<meta property="{{ tag.tag_name_value }}" content="{{ tag.tag_content }}" />
+{% endif %} {% endfor %}
+<!-- end of meta tags -->
+{% endblock headtaglinks %}
+<!-- end of page specific links -->
+
+<!-- page specific body -->
+{% block container %}
+<div class="list-loop-wrapper">
+    <div class="nav-icons">
+        <a href="{% url 'frontend_getbloglist' %}">
+            <img src="{% static 'icons/back_arrow.png' %}" alt="go back icon" />
+        </a>
+        <button onclick="onSocialCall(0)" data-toggle="tooltip" data-placement="top" title="Share on Facebook">
+            <img src="{% static 'icons/facebook_share_icon.png' %}" alt="facebook share icon" />
+        </button>
+        <button onclick="onSocialCall(1)" data-toggle="tooltip" data-placement="top" title="Share on Twitter">
+            <img src="{% static 'icons/twitter_share_icon.png' %}" alt="twitter share icon" />
+        </button>
+    </div>
+    <div class="list-loop">
+        <h3 class="blog-title-padding font-size3 ff-worksansmedium">
+            {{ Payload.blog_title }}
+        </h3>
+
+        {% for para in Payload.paragraphs %}
+        <div class="blog-para-wrapper">
+            {% if para.image != None %}
+            <img src="/media/{{ para.image }}" alt="Blog image" class="blog-image {% if forloop.counter0|divisibleby:2 %}image-float-left{% else %}image-float-right{% endif %}" />
+            {% endif %}
+            <p class="blog-para font-size5 ff-latoregular">{{ para.body }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock container %}
+<!-- end of page specific body -->
+
+<!-- page specific body links -->
+{% block bodytaglinks %}
+<script>
+    function onSocialCall(option) {
+        // share blog on social media 0: facebook, 1: twitter, 2: google
+        switch (option) {
+            case 0:
+                window.open('https://www.facebook.com/sharer.php?u={{ request.build_absolute_uri }}', '', 'height=550,width=525,left=100,top=100,menubar=0');
+                break;
+            case 1:
+                window.open('https://twitter.com/share?url={{ request.build_absolute_uri }}', '', 'height=550,width=525,left=100,top=100,menubar=0');
+                break;
+            case 2:
+                window.open('https://plus.google.com/share?url={{ request.build_absolute_uri }}', '', 'height=550,width=525,left=100,top=100,menubar=0');
+                break;
+        }
+    }
+</script>
+{% endblock bodytaglinks %}
+<!-- end of page specific body links -->

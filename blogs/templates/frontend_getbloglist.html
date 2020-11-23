@@ -1,0 +1,181 @@
+<!-- extend base html file -->
+{% extends 'frontend_base.html' %}
+<!-- extend base html file -->
+
+<!-- head tag title -->
+{% block title %} Bloglist {% endblock title %}
+<!-- end of head tag title -->
+
+{% load static %} {% load compress %}
+
+<!-- page specific links -->
+{% block headtaglinks %} {% compress css %}
+<link rel="stylesheet" type="text/x-scss" href="{% static 'css/frontend_getbloglist.scss' %}" />
+{% endcompress %} {% endblock headtaglinks %}
+<!-- end of page specific links -->
+
+<!-- page specific body -->
+{% block container %}
+<div class="list-loop-wrapper">
+    <input type="hidden" id="recievedData" value="{{ Payload }}" />
+    <div id="flexLeft" class="flex-column flex-left-column"></div>
+    <div id="flexRight" class="flex-column flex-right-column"></div>
+</div>
+{% endblock container %}
+<!-- end of page specific body -->
+
+<!-- page specific body links -->
+{% block bodytaglinks %}
+<script>
+    let blogEntries; // inialize arrays
+    let blogEntriesLeft = [];
+    let blogEntriesRight = [];
+    let windowResizeFlag = false; // false for > 420 | true for <= 420
+    window.onload = onLoadInit; // run when web page is loaded
+    document.body.onresize = blogResizer; // run when web page is resized
+    function onLoadInit() {
+        // on load function
+        this.blogEntries = JSON.parse(document.getElementById('recievedData').value); // fetch data in form of valid json string and convert it back to json
+        if ((this.blogEntries !== null) & (this.blogEntries.blog_list !== null)) {
+            // null check
+            this.blogEntries = this.blogEntries.blog_list.map(function(element) {
+                return {
+                    blog_id: element.blog_id,
+                    blog_title: element.blog_title,
+                    blog_image: element.blog_image,
+                    blog_body: element.blog_body.length > 50 ? element.blog_body.substring(0, 150) + '...' : element.blog_body,
+                };
+            });
+            if (window.innerWidth > 600) {
+                // if larger than 600 devide into two arrays
+                this.separateArray(this.blogEntries);
+                this.windowResizeFlag = false; // assign flag as large screen to not call methods unecessarily
+                this.removeColumnNodes(); // delete all existing nodes
+                this.populateColumns(); // create new nodes
+            } else if (window.innerWidth <= 600) {
+                // if screeb is smaller than 600 combines two arrays into one
+                this.joinArray(this.blogEntries);
+                this.windowResizeFlag = true;
+                this.removeColumnNodes(); // delete all existing nodes
+                this.populateColumns(); // create new nodes
+            }
+            // this.blogResizer();
+            console.log('Hey there! Whatchya looking for?');
+        }
+    }
+    function separateArray(blogEntries) {
+        // function to separate one array into two
+        this.blogEntriesLeft = []; // empty bith arrays
+        this.blogEntriesRight = [];
+        this.blogEntriesLeft.push(blogEntries[0]); // add first one in left array
+        for (let i = 1; i < blogEntries.length; i++) {
+            // run loop and check for odd and even
+            if (i % 2 === 0) {
+                this.blogEntriesLeft.push(blogEntries[i]);
+            } else if (i % 2 !== 0) {
+                this.blogEntriesRight.push(blogEntries[i]);
+            }
+        }
+    }
+    function joinArray(blogEntries) {
+        // function to combine two arrays into one
+        this.blogEntriesRight = []; // empty both arrays
+        this.blogEntriesLeft = [];
+        this.blogEntriesLeft = blogEntries.slice(); // copy entire array into left array
+    }
+    function blogResizer() {
+        // function to run on window resize
+        if ((window.innerWidth > 600) & this.windowResizeFlag) {
+            this.separateArray(this.blogEntries);
+            this.windowResizeFlag = false;
+            this.removeColumnNodes();
+            this.populateColumns();
+        } else if ((window.innerWidth <= 600) & !this.windowResizeFlag) {
+            this.joinArray(this.blogEntries);
+            this.windowResizeFlag = true;
+            this.removeColumnNodes();
+            this.populateColumns();
+        }
+    }
+    function removeColumnNodes() {
+        // remove all child dom nodes
+        let parentDom;
+        this.parentDom = document.getElementById('flexLeft'); // assign parent node as left
+        if (this.parentDom !== null) {
+            while (this.parentDom.firstChild) {
+                // while it has a first child keep removing nodes
+                this.parentDom.removeChild(this.parentDom.firstChild);
+            }
+        }
+        this.parentDom = document.getElementById('flexRight'); // same as above for right
+        if (this.parentDom !== null) {
+            while (this.parentDom.firstChild) {
+                this.parentDom.removeChild(this.parentDom.firstChild);
+            }
+        }
+    }
+    function populateColumns() {
+        // populate columns with new nodes
+        let leftColumn = document.getElementById('flexLeft'); // fetch lefta and right columns
+        let rightColumn = document.getElementById('flexRight');
+
+        if ((leftColumn !== null) & (this.blogEntriesLeft !== null) & (this.blogEntriesLeft !== [])) {
+            let i = 0,
+                length = this.blogEntriesLeft.length;
+            for (; i < length; i++) {
+                leftColumn.appendChild(
+                    this.createLoopItem(this.blogEntriesLeft[i].blog_id, this.blogEntriesLeft[i].blog_title, this.blogEntriesLeft[i].blog_image, this.blogEntriesLeft[i].blog_body)
+                );
+            }
+        }
+        if ((rightColumn !== null) & (this.blogEntriesRight !== null) & (this.blogEntriesRight !== [])) {
+            let i = 0,
+                length = this.blogEntriesRight.length;
+            for (; i < length; i++) {
+                rightColumn.appendChild(
+                    this.createLoopItem(
+                        this.blogEntriesRight[i].blog_id,
+                        this.blogEntriesRight[i].blog_title,
+                        this.blogEntriesRight[i].blog_image,
+                        this.blogEntriesRight[i].blog_body
+                    )
+                );
+            }
+        }
+    }
+    function createLoopItem(id, heading, picture, body) {
+        let loopItem = document.createElement('DIV');
+        loopItem.classList.add('list-loop');
+
+        let title = document.createElement('H3');
+        title.classList.add('blog-title', 'font-size4', 'ff-worksansmedium');
+        title.innerText = heading;
+
+        let image = document.createElement('IMG');
+        image.classList.add('blog-image');
+        image.setAttribute('alt', 'Blog image');
+        image.setAttribute('src', '/media/' + picture);
+
+        let para = document.createElement('P');
+        para.classList.add('blog-para', 'font-size5', 'ff-latoregular');
+        para.innerText = body;
+
+        let buttonWraper = document.createElement('DIV');
+        buttonWraper.classList.add('blog-button');
+
+        let button = document.createElement('A');
+        button.classList.add('font-size5', 'ff-worksansmedium');
+        button.innerText = 'more';
+        button.setAttribute('href', '/view/' + id);
+        buttonWraper.appendChild(button);
+
+        loopItem.appendChild(title);
+        loopItem.appendChild(image);
+        loopItem.appendChild(para);
+        loopItem.appendChild(buttonWraper);
+
+        return loopItem;
+    }
+</script>
+{% endblock bodytaglinks %}
+<!-- end of page specific body links -->

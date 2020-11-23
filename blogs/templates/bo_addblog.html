@@ -1,0 +1,153 @@
+{% extends 'bo_post_login.html' %} {% block bodyContent %}
+<div class="container-fluid">
+    <form id="blog-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <br />
+        <br />
+        <br />
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="jumbotron col-md-8">
+                <h1 class="display-5">Add Blog</h1>
+                <hr class="my-4" />
+                {% if Message%}
+                <div class="alert alert-warning" role="alert">
+                    {{Message}}
+                </div>
+                <hr class="my-4" />
+                {% endif %}
+                <div class="form-group">
+                    <label>Blog Title</label>
+                    <input type="text" class="form-control" name="blog_title" placeholder=" " autocomplete="on" required />
+                </div>
+                <hr class="my-4" />
+                <div class="row">
+                    <button class="btn btn-dark btn-round mb-3 ml-3" type="button" onclick="addParagraph()">+&nbsp;&nbsp;Add paragraph</button>
+                    <button class="btn btn-dark btn-round mb-3 ml-3" type="button" onclick="addMetaTag()">+&nbsp;&nbsp;Add meta tag</button>
+                    <a class="mb-3 ml-3" href="{% url 'bo_add_blog' %}">
+                        <button class="btn btn-danger btn-round" type="button">x&nbsp;&nbsp;Clear form</button>
+                    </a>
+                </div>
+                <hr class="my-4" />
+                <div class="" id="metaTagWrapper">
+                    <input type="hidden" id="recievedData" value="{{ Payload.json_string }}" />
+                </div>
+
+                <hr class="my-4" />
+                <div class="" id="paragraphWrapper"></div>
+
+                <br />
+                <input type="submit" class="btn btn-info btn-fill btn-round" value="&nbsp;&nbsp;&nbsp;Submit&nbsp;&nbsp;&nbsp;" />
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+        <br /><br />
+    </form>
+</div>
+{% endblock bodyContent %} {% block blodytaglinkschild %}
+<script>
+    let metaTagTypes = [];
+    let paragraphCounter;
+    let metaTagCounter;
+    window.onload = onLoadInit;
+    function onLoadInit() {
+        this.metaTagTypes = JSON.parse(document.getElementById('recievedData').value); // fetch data in form of valid json string and convert it back to json
+        if ((this.metaTagTypes !== null) & (this.metaTagTypes.meta_tag_type_list !== null)) {
+            this.metaTagTypes = this.metaTagTypes.meta_tag_type_list;
+        }
+        this.paragraphCounter = 1;
+        this.metaTagCounter = 1;
+    }
+    function addParagraph() {
+        let paraItem = document.createElement('DIV');
+        paraItem.classList.add('paragraph-item');
+
+        let paraBody = document.createElement('DIV');
+        paraBody.classList.add('form-group');
+
+        let paraBodyLabel = document.createElement('LABEL');
+        paraBodyLabel.innerText = 'Add paragraph body ' + this.paragraphCounter;
+        let paraBodyTextarea = document.createElement('TEXTAREA');
+        paraBodyTextarea.classList.add('form-control');
+        paraBodyTextarea.setAttribute('type', 'text');
+        paraBodyTextarea.setAttribute('required', 'true');
+        paraBodyTextarea.setAttribute('autocomplete', 'on');
+        paraBodyTextarea.setAttribute('name', 'paragraph' + this.paragraphCounter);
+
+        paraBody.appendChild(paraBodyLabel);
+        paraBody.appendChild(paraBodyTextarea);
+
+        let paraImage = document.createElement('DIV');
+        paraImage.classList.add('form-group');
+
+        let paraImageLabel = document.createElement('LABEL');
+        paraImageLabel.innerText = 'Add image for paragrapgh ' + this.paragraphCounter;
+        let paraImageInput = document.createElement('INPUT');
+        paraImageInput.classList.add('form-control');
+        paraImageInput.setAttribute('type', 'file');
+        paraImageInput.setAttribute('required', 'true');
+        paraImageInput.setAttribute('multiple', 'false');
+        paraImageInput.setAttribute('autocomplete', 'on');
+        paraImageInput.setAttribute('name', 'file_content' + this.paragraphCounter);
+
+        paraImage.appendChild(paraImageLabel);
+        paraImage.appendChild(paraImageInput);
+
+        paraItem.appendChild(paraBody);
+        paraItem.appendChild(paraImage);
+
+        document.getElementById('paragraphWrapper').appendChild(paraItem);
+        this.paragraphCounter++;
+    }
+    function addMetaTag() {
+        if ((this.metaTagTypes !== []) | (this.metaTagTypes !== null)) {
+            let metaTagItem = document.createElement('DIV');
+            metaTagItem.classList.add('meta-tag-item');
+
+            let tagType = document.createElement('DIV');
+            tagType.classList.add('form-group');
+
+            let tagTypeLabel = document.createElement('LABEL');
+            tagTypeLabel.innerText = 'Add meta tag ' + this.metaTagCounter;
+            let tagTypeSelect = document.createElement('SELECT');
+            tagTypeSelect.classList.add('form-control');
+            tagTypeSelect.setAttribute('name', 'tag_type' + this.metaTagCounter);
+
+            let i = 0,
+                l = this.metaTagTypes.length,
+                optionDom;
+            for (; i < l; i++) {
+                optionDom = null;
+                optionDom = document.createElement('OPTION');
+                optionDom.setAttribute('value', this.metaTagTypes[i].type_id.toString());
+                optionDom.innerText = this.metaTagTypes[i].type_name.toString() + ' : ' + this.metaTagTypes[i].type_name_value.toString();
+                tagTypeSelect.appendChild(optionDom);
+            }
+
+            tagType.appendChild(tagTypeLabel);
+            tagType.appendChild(tagTypeSelect);
+
+            let tagContent = document.createElement('DIV');
+            tagContent.classList.add('form-group');
+
+            let tagContentLabel = document.createElement('LABEL');
+            tagContentLabel.innerText = 'Add content for meta tag ' + this.metaTagCounter;
+            let tagContentImput = document.createElement('INPUT');
+            tagContentImput.classList.add('form-control');
+            tagContentImput.setAttribute('type', 'text');
+            tagContentImput.setAttribute('required', 'true');
+            tagContentImput.setAttribute('autocomplete', 'on');
+            tagContentImput.setAttribute('name', 'tag_content' + this.metaTagCounter);
+
+            tagContent.appendChild(tagContentLabel);
+            tagContent.appendChild(tagContentImput);
+
+            metaTagItem.appendChild(tagType);
+            metaTagItem.appendChild(tagContent);
+
+            document.getElementById('metaTagWrapper').appendChild(metaTagItem);
+            this.metaTagCounter++;
+        }
+    }
+</script>
+{% endblock blodytaglinkschild %}

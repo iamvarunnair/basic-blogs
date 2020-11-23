@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>BO - {% block title %} Document {% endblock title %}</title>
+        {% load static %} {% load compress %}
+
+        <!-- bootstrap links -->
+        <link type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" />
+        <link type="text/css" href="{% static 'bootstrap/css/bootstrap-grid.min.css' %}" rel="stylesheet" />
+        <link type="text/css" href="{% static 'bootstrap/css/bootstrap-reboot.min.css' %}" rel="stylesheet" />
+        <!-- end of bootstrap links -->
+
+        <!-- link common.scss -->
+        {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/common.scss' %}" />
+        {% endcompress %}
+        <!-- end of link common.scss -->
+
+        <!-- page specific links -->
+        {% block headtaglinks %} {% endblock headtaglinks %}
+        <!-- end of page specific links -->
+    </head>
+    <body>
+        <div class="body-wrapper">
+            <!-- page content -->
+            {% block container %} {% endblock container %}
+            <!-- end of page content -->
+        </div>
+
+        <!-- page specific body links -->
+        {% block bodytaglinks %} {% endblock bodytaglinks %}
+        <!-- end of page specific body links -->
+
+        <!-- bootstrap links -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="{% static 'bootstrap/js/bootstrap.min.js' %}" type="text/javascript"></script>
+        <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}" type="text/javascript"></script>
+        <script>
+            $(function() {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        </script>
+        <!-- end of bootstrap links -->
+    </body>
+</html>
